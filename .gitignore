@@ -1,0 +1,30 @@
+# Carpetas de compilación y dependencias
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+venv/
+env/
+
+# Entorno virtual y archivos de Python
+*.so
+*.egg
+
+# Base de datos local
+db.sqlite3
+
+# Archivos de log
+*.log
+
+# IDE y editores
+.vscode/
+.idea/
+*.swp
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Variables de entorno
+.env
