@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<body>
+    <h1>Lista de Pruebas</h1>
+
+    <h2>Alumnos</h2>
+    <ul>
+        {% for alumno in alumnos %}
+            <li>{{ alumno.nombre }} - {{ alumno.email }}</li>
+        {% empty %}
+            <li>No hay alumnos registrados.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Profesores</h2>
+    <ul>
+        {% for profesor in profesores %}
+            <li>{{ profesor.nombre }} - {{ profesor.email }}</li>
+        {% empty %}
+            <li>No hay profesores registrados.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
