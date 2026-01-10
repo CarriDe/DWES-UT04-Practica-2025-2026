@@ -26,3 +26,16 @@ def login_view(request):
         Contraseña = request.POST.get('contraseña')
         user = authenticate(request, username=Usuario, password=Contraseña)
     return render(request, 'Aplicaciones/login.html')
+
+def crear_tarea(request):
+    if request.method == 'POST':
+        tipo = request.POST.get('tipo')
+        titulo = request.POST.get('titulo')
+        descripcion = request.POST.get('descripcion')
+        
+        if tipo and titulo and descripcion:
+            from .models import Tarea
+            nueva_tarea = Tarea.objects.create(tipo=tipo, titulo=titulo, descripcion=descripcion)
+            return redirect('lista_usuarios')
+    
+    return render(request, 'Aplicaciones/crear_tarea.html')
