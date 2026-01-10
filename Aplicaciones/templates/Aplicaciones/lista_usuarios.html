@@ -110,7 +110,6 @@
         </table>
         
         <h2>Profesores</h2>
-        {% if profesores %}
         <table>
             <thead>
                 <tr>
@@ -126,12 +125,13 @@
                     <td>{{ profesor.first_name }} {{ profesor.last_name }}</td>
                     <td>{{ profesor.email }}</td>
                 </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="no-data">No hay profesores registrados</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
-        {% else %}
-        <div class="no-data">No hay profesores registrados</div>
-        {% endif %}
     </div>
 </body>
 </html>
