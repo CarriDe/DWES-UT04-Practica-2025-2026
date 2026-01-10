@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crear usuario</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 400px;
+            margin: 50px auto;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+        }
+        input {
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Crear usuario</h2>
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Nombre de usuario</label>
+        {{ form.usuario }}
+
+        <label>Correo electrónico</label>
+        {{ form.correo }}
+
+        <label>Contraseña</label>
+        {{ form.contraseña }}
+
+        <button type="submit">Crear usuario</button>
+    </form>
+    <br>
+</body>
+</html>
