@@ -10,3 +10,13 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.rol})"
+
+class Tarea(models.Model):
+    TIPO_CHOICES = (
+        ('INDIVIDUAL', 'Individual'),
+        ('GRUPAL', 'Grupal'),
+        ('EVALUABLE', 'Evaluable'),
+    )
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
+    titulo = models.CharField(max_length=200)
+    descripcion = models.TextField()

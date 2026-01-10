@@ -4,8 +4,7 @@ from Aplicaciones import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-    path('login/', views.login_view, name='login'),
+    path('', views.login_view, name='login'),
     path('lista/', views.lista_usuarios, name='lista_usuarios'),
     path('crear/', views.crear_usuario, name='crear_usuario'),
 ]
