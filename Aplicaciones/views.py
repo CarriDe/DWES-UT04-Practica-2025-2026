@@ -2,23 +2,28 @@ from django.shortcuts import render, redirect
 from .models import Usuario
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from .forms import UsuarioForm, TareaForm
 
 def lista_usuarios(request):
-    usuarios = Usuario.objects.all()
-    return render(request, 'Aplicaciones/lista_usuarios.html', {'usuarios': usuarios})
+    alumnos = Usuario.objects.filter(rol='ALUMNO')
+    profesores = Usuario.objects.filter(rol='PROFESOR')
+    return render(request, 'Aplicaciones/lista_usuarios.html', {
+        'alumnos': alumnos,
+        'profesores': profesores
+    })
 
 def crear_usuario(request):
     if request.method == 'POST':
-        usuario = request.POST.get('usuario')
-        contraseña = request.POST.get('contraseña')
-        correo = request.POST.get('correo')
-        rol = request.POST.get('rol')
-        
-        if usuario and contraseña and correo and rol:
-            nuevo_usuario = Usuario.objects.create_user(username=usuario, password=contraseña, email=correo, rol=rol)
+        form = UsuarioForm(request.POST)
+        if form.is_valid():
+            usuario = form.save(commit=False)
+            usuario.set_password(form.cleaned_data['contraseña'])
+            usuario.save()
             return redirect('lista_usuarios')
-    
-    return render(request, 'Aplicaciones/crear_usuario.html')
+    else:
+        form = UsuarioForm()
+    return render(request, 'Aplicaciones/crear_usuario.html', {'form': form})
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -29,13 +34,11 @@ def login_view(request):
 
 def crear_tarea(request):
     if request.method == 'POST':
-        tipo = request.POST.get('tipo')
-        titulo = request.POST.get('titulo')
-        descripcion = request.POST.get('descripcion')
-        
-        if tipo and titulo and descripcion:
-            from .models import Tarea
-            nueva_tarea = Tarea.objects.create(tipo=tipo, titulo=titulo, descripcion=descripcion)
+        form = TareaForm(request.POST)
+        if form.is_valid():
+            form.save()
             return redirect('lista_usuarios')
-    
-    return render(request, 'Aplicaciones/crear_tarea.html')
+    else:
+        form = TareaForm()
+
+    return render(request, 'Aplicaciones/crear_tarea.html', {'form': form})
