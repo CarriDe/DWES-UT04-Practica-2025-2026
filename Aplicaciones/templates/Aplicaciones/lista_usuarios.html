@@ -86,7 +86,6 @@
         </div>
         
         <h2>Alumnos</h2>
-        {% if alumnos %}
         <table>
             <thead>
                 <tr>
@@ -102,12 +101,13 @@
                     <td>{{ alumno.first_name }} {{ alumno.last_name }}</td>
                     <td>{{ alumno.email }}</td>
                 </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="no-data">No hay alumnos registrados</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
-        {% else %}
-        <div class="no-data">No hay alumnos registrados</div>
-        {% endif %}
         
         <h2>Profesores</h2>
         {% if profesores %}
