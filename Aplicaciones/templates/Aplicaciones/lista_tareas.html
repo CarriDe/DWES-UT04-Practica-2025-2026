@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Listado de Tareas</title>
+    <style>
+        body {
+            font-family: Arial; 
+            max-width: 800px; 
+            margin: 50px auto;
+            background: #f5f5f5;
+        }
+        .container{
+            background: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 3px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .no-data {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+        }
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .links a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Listado de Tareas</h1>
+            <a href="{% url 'lista_usuarios' %}" class="btn">Volver a Usuarios</a>
+        </div>
+        
+        <h2>Tareas Individuales</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Completada</th>
+                    <th>Validada</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tarea in tareas_individual %}
+                <tr>
+                    <td>{{ tarea.titulo }}</td>
+                    <td>{{ tarea.descripcion|truncatewords:10 }}</td>
+                    <td>{% if tarea.completada %}<b>Sí</b>{% else %}<b>No</b>{% endif %}</td>
+                    <td>{% if tarea.validada %}<b>Sí</b>{% else %}<b>No</b>{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="no-data">No hay tareas individuales</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <h2>Tareas Grupales</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Completada</th>
+                    <th>Validada</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tarea in tareas_grupal %}
+                <tr>
+                    <td>{{ tarea.titulo }}</td>
+                    <td>{{ tarea.descripcion|truncatewords:10 }}</td>
+                    <td>{% if tarea.completada %}<b>Sí</b>{% else %}<b>No</b>{% endif %}</td>
+                    <td>{% if tarea.validada %}<b>Sí</b>{% else %}<b>No</b>{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="no-data">No hay tareas grupales</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="links">
+            <a href="{% url 'crear_tarea_individual' %}" class="btn">Crear Tarea Individual</a>
+            <a href="{% url 'crear_tarea_grupal' %}" class="btn">Crear Tarea Grupal</a>
+        </div>
+    </div>
+</body>
+</html>

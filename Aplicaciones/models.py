@@ -25,6 +25,7 @@ class Tarea(models.Model):
     validada = models.BooleanField(default=False)
     profesor_validar = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True, related_name='tareas_validadas')
     completada = models.BooleanField(default=False)
+    crear = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='tareas_creadas', null=True, blank=True)
     
     def __str__(self):
         return self.titulo
