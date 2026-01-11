@@ -10,6 +10,7 @@ urlpatterns = [
     path('crear/', views.crear_usuario, name='crear_usuario'),
     path('crear-tarea-individual/', views.crear_tarea_individual, name='crear_tarea_individual'),
     path('crear-tarea-grupal/', views.crear_tarea_grupal, name='crear_tarea_grupal'),
-    path('validar-tareas/', views.validar_tarea, name='validar_tarea'),
-    path('validacion/<int:tarea_id>/', views.validacion, name='validacion'),
+    path('ejercicios-alumnos/', views.ejercicios_alumnos, name='ejercicios_alumnos'),
+    path('validar-tarea/<int:tarea_id>/', views.validar_tarea, name='validar_tarea'),
+    path('validacion-profesor/', views.validacion, name='validacion_profesor'),
 ]

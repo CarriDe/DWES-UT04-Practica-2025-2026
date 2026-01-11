@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mis Tareas - Alumno</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 { text-align: center; margin-bottom: 20px; color: #333; }
+        h2 { color: #17a2b8; margin-bottom: 20px; }
+        h3 { color: #555; margin-top: 25px; margin-bottom: 15px; font-size: 1.1em; border-bottom: 2px solid #17a2b8; padding-bottom: 8px; }
+        ul { list-style: none; }
+        li {
+            background: #f9f9f9;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #17a2b8;
+        }
+        li:hover { background: #e9ecef; }
+        .tarea-titulo { font-weight: bold; color: #333; font-size: 1.1em; margin-bottom: 8px; }
+        .tarea-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            margin: 5px 5px 5px 0;
+        }
+        .badge-individual { background: #e3f2fd; color: #1976d2; }
+        .badge-grupal { background: #f3e5f5; color: #7b1fa2; }
+        .estado { margin: 8px 0; font-size: 0.95em; }
+        .estado-pendiente { color: #dc3545; font-weight: bold; }
+        .estado-completada { color: #fd7e14; font-weight: bold; }
+        .estado-validada { color: #28a745; font-weight: bold; }
+        .estado-no-validada { color: #dc3545; font-weight: bold; }
+        .tarea-info { color: #666; font-size: 0.9em; margin: 5px 0; }
+        .btn-entregar {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .btn-entregar:hover { background: #218838; }
+        .volver-link { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; }
+        .volver-link:hover { text-decoration: underline; }
+        .empty-message { text-align: center; color: #999; padding: 20px; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mis Ejercicios y Tareas</h1>
+        <h2>Entregas de {{ alumno.first_name }} {{ alumno.last_name }}</h2>
+        
+        <h3>Tareas Individuales</h3>
+        <ul>
+            {% for tarea in tareas_individuales %}
+                <li>
+                    <div class="tarea-titulo">{{ tarea.titulo }}</div>
+                    
+                    <span class="tarea-badge badge-individual">TAREA INDIVIDUAL</span>
+                    
+                    <div class="tarea-info">
+                        Fecha creación: {{ tarea.fecha_creacion|date:"d/m/Y H:i"|default:"-" }} | 
+                        Límite: {{ tarea.fecha_final|date:"d/m/Y"|default:"Sin fecha límite" }}
+                    </div>
+                    
+                    <div class="estado">
+                        Estado: 
+                        {% if tarea.validada %}
+                            <span class="estado-validada"> VALIDADA</span>
+                            {% if tarea.profesor_validar %}
+                                (por {{ tarea.profesor_validar.first_name }} {{ tarea.profesor_validar.last_name }})
+                            {% endif %}
+                        {% elif tarea.completada and tarea.evaluacion %}
+                            <span class="estado-completada">ENTREGADA (pendiente de validación)</span>
+                        {% elif tarea.completada %}
+                            <span class="estado-completada">ENTREGADA</span>
+                        {% else %}
+                            <span class="estado-pendiente"> PENDIENTE</span>
+                            <a href="{% url 'validar_tarea' tarea.id %}" class="btn-entregar">Entregar</a>
+                        {% endif %}
+                    </div>
+                </li>
+            {% empty %}
+                <li class="empty-message">No hay tareas individuales registradas.</li>
+            {% endfor %}
+        </ul>
+        
+        <h3>Tareas Grupales</h3>
+        <ul>
+            {% for tarea in tareas_grupales %}
+                <li>
+                    <div class="tarea-titulo">{{ tarea.titulo }}</div>
+                    
+                    <span class="tarea-badge badge-grupal">TAREA GRUPAL</span>
+                    
+                    <div class="tarea-info">
+                        Fecha creación: {{ tarea.fecha_creacion|date:"d/m/Y H:i"|default:"-" }} | 
+                        Límite: {{ tarea.fecha_final|date:"d/m/Y"|default:"Sin fecha límite" }}
+                    </div>
+                    
+                    <div class="estado">
+                        Estado: 
+                        {% if tarea.validada %}
+                            <span class="estado-validada">✓ VALIDADA</span>
+                            {% if tarea.profesor_validar %}
+                                (por {{ tarea.profesor_validar.first_name }} {{ tarea.profesor_validar.last_name }})
+                            {% endif %}
+                        {% elif tarea.completada and tarea.evaluacion %}
+                            <span class="estado-completada">ENTREGADA (pendiente de validación)</span>
+                        {% elif tarea.completada %}
+                            <span class="estado-completada">ENTREGADA</span>
+                        {% else %}
+                            <span class="estado-pendiente">✗ PENDIENTE</span>
+                            <a href="{% url 'validar_tarea' tarea.id %}" class="btn-entregar">Entregar</a>
+                        {% endif %}
+                    </div>
+                </li>
+            {% empty %}
+                <li class="empty-message">No hay tareas grupales registradas.</li>
+            {% endfor %}
+        </ul>
+        
+        <a href="{% url 'lista_usuarios' %}" class="volver-link">← Volver a lista de usuarios</a>
+    </div>
+</body>
+</html>

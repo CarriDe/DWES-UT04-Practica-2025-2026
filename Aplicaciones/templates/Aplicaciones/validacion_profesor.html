@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Validación de Tareas - Profesor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 { text-align: center; margin-bottom: 20px; color: #333; }
+        h2 { color: #007bff; margin-bottom: 20px; }
+        ul { list-style: none; }
+        li {
+            background: #f9f9f9;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li:hover { background: #e9ecef; }
+        .tarea-info { flex: 1; }
+        .tarea-titulo { font-weight: bold; color: #333; font-size: 1.1em; }
+        .tarea-detalles { color: #666; margin-top: 5px; font-size: 0.9em; }
+        .validar-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .validar-btn:hover { background: #218838; }
+        .volver-link { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; }
+        .volver-link:hover { text-decoration: underline; }
+        .seccion-profesor {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .seccion-profesor h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .seccion-profesor p {
+            color: #856404;
+            line-height: 1.6;
+        }
+        .alerta-restringido {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tareas Pendientes de Validación</h1>
+        <h2>Profesor: {{ profesor.first_name }} {{ profesor.last_name }}</h2>
+        
+        <ul>
+        {% for tarea in tareas_pendientes %}
+            <li>
+                <div class="tarea-info">
+                    <div class="tarea-titulo">{{ tarea.titulo }}</div>
+                    <div class="tarea-detalles">
+                        Tipo: {{ tarea.get_tipo_display }} |
+                        Fecha creación: {{ tarea.fecha_creacion|date:"d/m/Y H:i" }} |
+                        Límite: {{ tarea.fecha_final|date:"d/m/Y"|default:"Sin fecha límite" }} |
+                        Creado por: {{ tarea.crear.first_name }} {{ tarea.crear.last_name }} ({{ tarea.crear.email }})
+                    </div>
+                </div>
+                <a href="{% url 'validar_tarea' tarea.id %}" class="validar-btn">
+                    Validar
+                </a>
+            </li>
+            {% empty %}
+                <p>No hay tareas para validar.</p>
+            {% endfor %}
+        </ul>
+        
+        {% if user.rol == 'PROFESOR' %}
+        <div class="seccion-profesor">
+            <p><strong>Total de tareas pendientes:</strong> {{ tareas_pendientes.count }}</p>
+        </div>
+        
+        <div class="seccion-profesor">
+            <h3> Lista de herramientas para los profesores (en construcción)</h3>
+            <p> Acceso exclusivo a funciones avanzadas de gestión de tareas.</p>
+            <p>• Validación masiva de tareas</p>
+            <p>• Generación de reportes de progreso</p>
+            <p>• Asignación automática de calificaciones</p>
+        </div>
+        {% else %}
+        <div class="alerta-restringido">
+            Contenido restringido: Solo los profesores pueden ver estadísticas y herramientas de gestión.
+        </div>
+        {% endif %}
+        
+        <a href="{% url 'lista_usuarios' %}" class="volver-link">Volver</a>        
+    </div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Usuario
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from .forms import UsuarioForm, TareaForm, TareaGrupalForm
 from .models import Tarea
 from django.shortcuts import get_object_or_404
@@ -42,9 +42,21 @@ def crear_usuario(request):
 # Vista para iniciar sesión, autentificaa las credenciales de la base de datos
 def login_view(request):
     if request.method == 'POST':
-        Usuario = request.POST.get('usuario')
-        Contraseña = request.POST.get('contraseña')
-        user = authenticate(request, username=Usuario, password=Contraseña)
+        usuario = request.POST.get('usuario')
+        contraseña = request.POST.get('contraseña')
+        user = authenticate(request, username=usuario, password=contraseña)
+        
+        if user is not None:
+            login(request, user)
+            # Redirigir según el rol
+            if user.rol == 'PROFESOR':
+                return redirect('validacion_profesor')
+            else:  # ALUMNO
+                return redirect('ejercicios_alumnos')
+        else:
+            # Credenciales inválidas, mostrar error
+            return render(request, 'Aplicaciones/login.html', {'error': 'Usuario o contraseña incorrectos'})
+    
     return render(request, 'Aplicaciones/login.html')
 
 # Vista para crear una tarea individual
@@ -78,19 +90,53 @@ def crear_tarea_grupal(request):
     return render(request, 'Aplicaciones/crear_tarea_grupal.html', {'form': form})
 
 # Vista para validar tareas pendientes
+# Vista para mostrar las tareas del alumno (individuales y grupales)
+def ejercicios_alumnos(request):
+    # Verificar que el usuario esté autenticado
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    # Obtener todas las tareas (individuales y grupales)
+    # En este caso, mostramos todas las tareas ya que no hay relación directa
+    # entre Usuario y Tarea de asignación
+    tareas_individuales = Tarea.objects.filter(tipo='INDIVIDUAL').select_related('crear', 'profesor_validar')
+    tareas_grupales = Tarea.objects.filter(tipo='GRUPAL').select_related('crear', 'profesor_validar')
+    
+    context = {
+        'alumno': request.user,
+        'tareas_individuales': tareas_individuales,
+        'tareas_grupales': tareas_grupales
+    }
+    
+    return render(request, 'Aplicaciones/ejercicios_alumnos.html', context)
+
+# Vista para validar una tarea específica (acción de completar/entregar)
 def validar_tarea(request, tarea_id):
     # Obtener la tarea o devolver error 404 si no existe
     tarea = get_object_or_404(Tarea, id=tarea_id)
     
-    if request.method == 'POST':
-        # Marcar la tarea como validada
-        tarea.validada = True
-        tarea.profesor_validar = request.user
-        tarea.save()
-        return redirect('lista_usuarios')
+    # Marcar la tarea como completada por el alumno
+    tarea.completada = True
+    tarea.save()
     
-    return render(request, 'Aplicaciones/validar_tarea.html', {'tarea': tarea})
+    # Redirigir de vuelta a la lista de tareas del alumno
+    return redirect('ejercicios_alumnos')
 
+# Vista para mostrar las tareas pendientes de validación para el profesor
 def validacion(request):
-    tareas = Tarea.objects.filter(requiere_evaluacion=True, completada=True, validada=False)
-    return render(request, 'Aplicaciones/validacion.html', {'tareas': tareas})    
+    # Verificar que el usuario esté autenticado y sea profesor
+    if not request.user.is_authenticated or request.user.rol != 'PROFESOR':
+        return redirect('login')
+    
+    # Filtrar tareas que requieren validación y no están validadas
+    tareas_pendientes = Tarea.objects.filter(
+        validada=False,
+        completada=True
+    ).select_related('crear')
+    
+    context = {
+        'profesor': request.user,
+        'tareas_pendientes': tareas_pendientes
+    }
+    
+    return render(request, 'Aplicaciones/validacion_profesor.html', context)    

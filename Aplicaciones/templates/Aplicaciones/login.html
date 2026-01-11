@@ -59,11 +59,22 @@
         .nav-links a:hover {
             background: #d6d8db;
         }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="login-box">
         <h1>Iniciar Sesión</h1>
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
         <form method="POST">
             {% csrf_token %}
             <input type="text" name="usuario" placeholder="Usuario" required>

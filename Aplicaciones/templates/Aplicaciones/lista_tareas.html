@@ -96,6 +96,8 @@
                 <tr>
                     <th>Título</th>
                     <th>Descripción</th>
+                    <th>Fecha Creación</th>
+                    <th>Fecha Límite</th>
                     <th>Completada</th>
                     <th>Validada</th>
                 </tr>
@@ -105,12 +107,14 @@
                 <tr>
                     <td>{{ tarea.titulo }}</td>
                     <td>{{ tarea.descripcion|truncatewords:10 }}</td>
+                    <td>{{ tarea.fecha_creacion|date:"d/m/Y H:i"|default:"-" }}</td>
+                    <td>{{ tarea.fecha_final|date:"d/m/Y"|default:"-" }}</td>
                     <td>{% if tarea.completada %}<b>Sí</b>{% else %}<b>No</b>{% endif %}</td>
                     <td>{% if tarea.validada %}<b>Sí</b>{% else %}<b>No</b>{% endif %}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="no-data">No hay tareas individuales</td>
+                    <td colspan="6" class="no-data">No hay tareas individuales</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -122,6 +126,8 @@
                 <tr>
                     <th>Título</th>
                     <th>Descripción</th>
+                    <th>Fecha Creación</th>
+                    <th>Fecha Límite</th>
                     <th>Completada</th>
                     <th>Validada</th>
                 </tr>
@@ -131,12 +137,14 @@
                 <tr>
                     <td>{{ tarea.titulo }}</td>
                     <td>{{ tarea.descripcion|truncatewords:10 }}</td>
+                    <td>{{ tarea.fecha_creacion|date:"d/m/Y H:i"|default:"-" }}</td>
+                    <td>{{ tarea.fecha_final|date:"d/m/Y"|default:"-" }}</td>
                     <td>{% if tarea.completada %}<b>Sí</b>{% else %}<b>No</b>{% endif %}</td>
                     <td>{% if tarea.validada %}<b>Sí</b>{% else %}<b>No</b>{% endif %}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="no-data">No hay tareas grupales</td>
+                    <td colspan="6" class="no-data">No hay tareas grupales</td>
                 </tr>
                 {% endfor %}
             </tbody>
