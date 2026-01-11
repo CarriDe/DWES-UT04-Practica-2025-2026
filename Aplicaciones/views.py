@@ -139,6 +139,21 @@ def validar_tarea(request, tarea_id):
     # Redirigir de vuelta a la lista de tareas del alumno
     return redirect('ejercicios_alumnos')
 
+@login_required
+def validar_tarea_profesor(request, tarea_id):
+    # Solo profesores pueden validar
+    if request.user.rol != 'PROFESOR':
+        return redirect('login')
+
+    tarea = get_object_or_404(Tarea, id=tarea_id)
+    # Marcar como validada y registrar el profesor
+    tarea.validada = True
+    tarea.profesor_validar = request.user
+    tarea.save()
+
+    # Volver a la lista de validación del profesor
+    return redirect('validacion_profesor')
+
 # Vista para mostrar las tareas pendientes de validación para el profesor
 def validacion(request):
     # Verificar que el usuario esté autenticado y sea profesor

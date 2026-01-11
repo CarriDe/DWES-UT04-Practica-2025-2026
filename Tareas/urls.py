@@ -14,6 +14,7 @@ urlpatterns = [
     path('crear-tarea-grupal/', views.crear_tarea_grupal, name='crear_tarea_grupal'),
     path('ejercicios-alumnos/', views.ejercicios_alumnos, name='ejercicios_alumnos'),
     path('validar-tarea/<int:tarea_id>/', views.validar_tarea, name='validar_tarea'),
+    path('validar-tarea-profesor/<int:tarea_id>/', views.validar_tarea_profesor, name='validar_tarea_profesor'),
     path('validacion-profesor/', views.validacion, name='validacion_profesor'),
     path('perfil/', views.perfil_usuario, name='perfil_usuario'),
 ]

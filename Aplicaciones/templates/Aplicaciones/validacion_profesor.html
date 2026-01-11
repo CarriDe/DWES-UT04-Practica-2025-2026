@@ -90,7 +90,7 @@
                         Creado por: {{ tarea.crear.first_name }} {{ tarea.crear.last_name }} ({{ tarea.crear.email }})
                     </div>
                 </div>
-                <a href="{% url 'validar_tarea' tarea.id %}" class="validar-btn">
+                <a href="{% url 'validar_tarea_profesor' tarea.id %}" class="validar-btn">
                     Validar
                 </a>
             </li>
