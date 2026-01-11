@@ -77,6 +77,9 @@
 <body>
     <div class="login-box">
         <h1>Iniciar Sesión</h1>
+        <div class="register-link">
+            <a href="{% url 'indice' %}">Índice</a>
+        </div>
         {% if error %}
             <div class="error-message">{{ error }}</div>
         {% endif %}
@@ -87,13 +90,7 @@
             <button type="submit">Entrar</button>
         </form>
         <div class="register-link">
-            <a href="{% url 'crear_usuario' %}">Crear usuario</a>
-        </div>
-        <div class="nav-links">
-            <a href="{% url 'crear_tarea_individual' %}">Crear tarea individual</a>
-            <a href="{% url 'crear_tarea_grupal' %}">Crear tarea grupal</a>
-            <a href="{% url 'lista_tareas' %}">Lista de tareas</a>
-            <a href="{% url 'lista_usuarios' %}">Lista de usuarios</a>
+            <a href="{% url 'crear_usuario' %}">Crear usuario</a><br><br>
         </div>
     </div>
 </body>

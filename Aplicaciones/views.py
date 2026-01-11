@@ -1,9 +1,11 @@
-from django.shortcuts import render, redirect
-from .models import Usuario
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
+from .models import Usuario, Tarea
 from .forms import UsuarioForm, TareaForm, TareaGrupalForm
-from .models import Tarea
-from django.shortcuts import get_object_or_404
+
+# Vista para mostrar el índice con todos los enlaces
+def indice(request):
+    return render(request, 'Aplicaciones/indice.html')
 
 # Vista para listar todos los usuarios separados por rol
 def lista_usuarios(request):
@@ -48,11 +50,8 @@ def login_view(request):
         
         if user is not None:
             login(request, user)
-            # Redirigir según el rol
-            if user.rol == 'PROFESOR':
-                return redirect('validacion_profesor')
-            else:  # ALUMNO
-                return redirect('ejercicios_alumnos')
+            # Redirigir al perfil del usuario
+            return redirect('perfil_usuario')
         else:
             # Credenciales inválidas, mostrar error
             return render(request, 'Aplicaciones/login.html', {'error': 'Usuario o contraseña incorrectos'})
@@ -139,4 +138,12 @@ def validacion(request):
         'tareas_pendientes': tareas_pendientes
     }
     
-    return render(request, 'Aplicaciones/validacion_profesor.html', context)    
+    return render(request, 'Aplicaciones/validacion_profesor.html', context)
+
+# Vista para mostrar el perfil del usuario
+def perfil_usuario(request):
+    # Verificar que el usuario esté autenticado
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    return render(request, 'Aplicaciones/perfil_usuario.html')    
