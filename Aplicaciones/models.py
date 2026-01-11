@@ -9,7 +9,7 @@ class Usuario(AbstractUser):
     rol = models.CharField(max_length=10, choices=ROL_CHOICES)
 
     def __str__(self):
-        return f"{self.usuario} ({self.rol})"
+        return f"{self.first_name} {self.last_name}"
 
 class Tarea(models.Model):
     TIPO_CHOICES = (
@@ -28,6 +28,7 @@ class Tarea(models.Model):
     crear = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='tareas_creadas', null=True, blank=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     fecha_final = models.DateField(null=True, blank=True)
+    alumnos_participantes = models.ManyToManyField(Usuario, related_name='tareas_participante', blank=True, limit_choices_to={'rol': 'ALUMNO'})
     
     def __str__(self):
         return self.titulo

@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from .models import Usuario, Tarea
 from .forms import UsuarioForm, TareaForm, TareaGrupalForm
 
 # Vista para mostrar el índice con todos los enlaces
+@login_required
 def indice(request):
     return render(request, 'Aplicaciones/indice.html')
 
 # Vista para listar todos los usuarios separados por rol
+@login_required
 def lista_usuarios(request):
     alumnos = Usuario.objects.filter(rol='ALUMNO')
     profesores = Usuario.objects.filter(rol='PROFESOR')
@@ -17,6 +20,7 @@ def lista_usuarios(request):
     })
 
 # Vista para listar todas las tareas
+@login_required
 def lista_tareas(request):
     tareas_individual = Tarea.objects.filter(tipo='INDIVIDUAL')
     tareas_grupal = Tarea.objects.filter(tipo='GRUPAL')
@@ -58,7 +62,14 @@ def login_view(request):
     
     return render(request, 'Aplicaciones/login.html')
 
+# Cerrar sesión y redirigir a login
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return redirect('login')
+
 # Vista para crear una tarea individual
+@login_required
 def crear_tarea_individual(request):
     if request.method == 'POST':
         form = TareaForm(request.POST)
@@ -74,6 +85,7 @@ def crear_tarea_individual(request):
     return render(request, 'Aplicaciones/crear_tarea_individual.html', {'form': form})
 
 # Vista para crear una tarea grupal
+@login_required
 def crear_tarea_grupal(request):
     if request.method == 'POST':
         form = TareaGrupalForm(request.POST)
@@ -81,6 +93,8 @@ def crear_tarea_grupal(request):
             tarea = form.save(commit=False)
             tarea.tipo = 'GRUPAL'  # Forzar tipo grupal
             tarea.save()
+            # Guardar relaciones ManyToMany (alumnos participantes)
+            form.save_m2m()
             return redirect('lista_tareas')
     else:
         # Inicializar formulario
@@ -99,7 +113,11 @@ def ejercicios_alumnos(request):
     # En este caso, mostramos todas las tareas ya que no hay relación directa
     # entre Usuario y Tarea de asignación
     tareas_individuales = Tarea.objects.filter(tipo='INDIVIDUAL').select_related('crear', 'profesor_validar')
-    tareas_grupales = Tarea.objects.filter(tipo='GRUPAL').select_related('crear', 'profesor_validar')
+    tareas_grupales = (
+        Tarea.objects.filter(tipo='GRUPAL')
+        .select_related('crear', 'profesor_validar')
+        .prefetch_related('alumnos_participantes')
+    )
     
     context = {
         'alumno': request.user,

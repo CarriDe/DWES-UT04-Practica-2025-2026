@@ -123,4 +123,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Autenticación personalizada
 AUTH_USER_MODEL = 'Aplicaciones.Usuario'
+
+# URL de login para los decoradores `login_required`
+LOGIN_URL = '/'
 LOGIN_URL = 'login'

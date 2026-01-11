@@ -5,6 +5,7 @@ from Aplicaciones import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
     path('indice/', views.indice, name='indice'),
     path('lista/', views.lista_usuarios, name='lista_usuarios'),
     path('tareas/', views.lista_tareas, name='lista_tareas'),
