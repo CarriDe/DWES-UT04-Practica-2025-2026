@@ -62,12 +62,55 @@
         .volver-link { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; }
         .volver-link:hover { text-decoration: underline; }
         .empty-message { text-align: center; color: #999; padding: 20px; font-style: italic; }
+        .crear-btns {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        .crear-btns a {
+            background: blueviolet;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        .crear-btns a:hover {
+            background: #7b1fa2;
+        }
+        .profesor-validador {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: #155724;
+        }
+        .alumnos-participantes {
+            background: #e2e3e5;
+            border-left: 4px solid #6c757d;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: #383d41;
+        }
+        .alumnos-participantes strong {
+            display: block;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Mis Ejercicios y Tareas</h1>
-        <h2>Entregas de {{ alumno.first_name }} {{ alumno.last_name }}</h2>
+        <h1>Ejercicios y Tareas de {{ alumno.first_name }} {{ alumno.last_name }}</h1>
+        <div class="crear-btns">
+            <a href="{% url 'crear_tarea_individual' %}">Crear Tarea Individual</a>
+            <a href="{% url 'crear_tarea_grupal' %}">Crear Tarea Grupal</a>
+        </div>
+
         
         <h3>Tareas Individuales</h3>
         <ul>
@@ -85,16 +128,18 @@
                     <div class="estado">
                         Estado: 
                         {% if tarea.validada %}
-                            <span class="estado-validada"> VALIDADA</span>
+                            <span class="estado-validada">VALIDADA</span>
                             {% if tarea.profesor_validar %}
-                                (por {{ tarea.profesor_validar.first_name }} {{ tarea.profesor_validar.last_name }})
+                                <div class="profesor-validador">
+                                    Validada por {{ tarea.profesor_validar.first_name }} {{ tarea.profesor_validar.last_name }}
+                                </div>
                             {% endif %}
                         {% elif tarea.completada and tarea.evaluacion %}
                             <span class="estado-completada">ENTREGADA (pendiente de validación)</span>
                         {% elif tarea.completada %}
                             <span class="estado-completada">ENTREGADA</span>
                         {% else %}
-                            <span class="estado-pendiente"> PENDIENTE</span>
+                            <span class="estado-pendiente">PENDIENTE</span>
                             <a href="{% url 'validar_tarea' tarea.id %}" class="btn-entregar">Entregar</a>
                         {% endif %}
                     </div>
@@ -117,19 +162,32 @@
                         Límite: {{ tarea.fecha_final|date:"d/m/Y"|default:"Sin fecha límite" }}
                     </div>
                     
+                    {% with participantes=tarea.alumnos_participantes.all %}
+                    {% if participantes|length %}
+                        <div class="alumnos-participantes">
+                            <strong>Alumnos participantes:</strong>
+                            {% for alumno in participantes %}
+                                • {{ alumno.first_name }} {{ alumno.last_name }} {% if not forloop.last %}<br>{% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% endwith %}
+                    
                     <div class="estado">
                         Estado: 
                         {% if tarea.validada %}
-                            <span class="estado-validada">✓ VALIDADA</span>
+                            <span class="estado-validada">VALIDADA</span>
                             {% if tarea.profesor_validar %}
-                                (por {{ tarea.profesor_validar.first_name }} {{ tarea.profesor_validar.last_name }})
+                                <div class="profesor-validador">
+                                    Validada por {{ tarea.profesor_validar.first_name }} {{ tarea.profesor_validar.last_name }}
+                                </div>
                             {% endif %}
                         {% elif tarea.completada and tarea.evaluacion %}
                             <span class="estado-completada">ENTREGADA (pendiente de validación)</span>
                         {% elif tarea.completada %}
                             <span class="estado-completada">ENTREGADA</span>
                         {% else %}
-                            <span class="estado-pendiente">✗ PENDIENTE</span>
+                            <span class="estado-pendiente">PENDIENTE</span>
                             <a href="{% url 'validar_tarea' tarea.id %}" class="btn-entregar">Entregar</a>
                         {% endif %}
                     </div>
@@ -140,7 +198,7 @@
         </ul>
         
         <a href="{% url 'indice' %}" class="volver-link">Índice</a>
-        <a href="{% url 'login' %}" class="volver-link">Cerrar sesión</a>
+        <a href="{% url 'login' %}" class="volver-link" style="color:#dc3545;">Cerrar sesión</a>
     </div>
 </body>
 </html>

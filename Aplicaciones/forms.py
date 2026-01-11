@@ -36,16 +36,18 @@ class TareaForm(forms.ModelForm):
 class TareaGrupalForm(forms.ModelForm):
     class Meta:
         model = Tarea
-        fields = ['titulo', 'descripcion', 'tipo', 'fecha_final', 'evaluacion']
+        fields = ['titulo', 'descripcion', 'tipo', 'fecha_final', 'alumnos_participantes', 'evaluacion']
         labels = {
             'titulo': 'Título',
             'descripcion': 'Descripción',
             'tipo': 'Tipo',
             'fecha_final': 'Fecha límite',
+            'alumnos_participantes': 'Alumnos participantes',
             'evaluacion': 'Requiere evaluación del profesor',
         }
         widgets = {
             'descripcion': forms.Textarea(attrs={'rows': 4}),
             'tipo': forms.HiddenInput(attrs={'value': 'GRUPAL'}),
             'fecha_final': forms.DateInput(attrs={'type': 'date'}),
+            'alumnos_participantes': forms.CheckboxSelectMultiple(),
         }        
