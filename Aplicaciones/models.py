@@ -18,6 +18,13 @@ class Tarea(models.Model):
         ('EVALUABLE', 'Evaluable'),
     )
     
-    tipo = models.CharField(max_length=15, choices=TIPO_CHOICES)
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField()
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    evaluacion = models.BooleanField(default=False)
+    validada = models.BooleanField(default=False)
+    profesor_validar = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True, related_name='tareas_validadas')
+    completada = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return self.titulo
