@@ -19,13 +19,29 @@ class UsuarioForm(forms.ModelForm):
 class TareaForm(forms.ModelForm):
     class Meta:
         model = Tarea
-        fields = ['titulo', 'descripcion', 'tipo']
+        fields = ['titulo', 'descripcion', 'tipo', 'evaluacion']
         labels = {
             'titulo': 'Título',
             'descripcion': 'Descripción',
             'tipo': 'Tipo',
+            'evaluacion': 'Requiere evaluación del profesor',
         }
         widgets = {
             'descripcion': forms.Textarea(attrs={'rows': 4}),
             'tipo': forms.HiddenInput(attrs={'value': 'INDIVIDUAL'}),
         }
+
+class TareaGrupalForm(forms.ModelForm):
+    class Meta:
+        model = Tarea
+        fields = ['titulo', 'descripcion', 'tipo', 'evaluacion']
+        labels = {
+            'titulo': 'Título',
+            'descripcion': 'Descripción',
+            'tipo': 'Tipo',
+            'evaluacion': 'Requiere evaluación del profesor',
+        }
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'rows': 4}),
+            'tipo': forms.HiddenInput(attrs={'value': 'GRUPAL'}),
+        }        
